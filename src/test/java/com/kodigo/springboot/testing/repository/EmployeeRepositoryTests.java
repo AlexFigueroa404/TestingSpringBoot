@@ -15,106 +15,194 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 public class EmployeeRepositoryTests {
 
 
-  /**
-   * @DataJpaTest provides some standard setup needed for testing the persistence layer:
-   * <p>
-   * configuring H2, an in-memory database setting Hibernate, Spring Data, and the DataSource
-   * performing an @EntityScan turning on SQL logging
-   * <p>
-   * To test the EmployeeRepository, we need to inject it into the test class. We can do this by
-   * using the @Autowired annotation:
-   * @Autowired private EmployeeRepository employeeRepository;
-   */
+/**
+ * @DataJpaTest provides some standard setup needed for testing the persistence layer:
+ * <p>
+ * configuring H2, an in-memory database setting Hibernate, Spring Data, and the DataSource
+ * performing an @EntityScan turning on SQL logging
+ * <p>
+ * To test the EmployeeRepository, we need to inject it into the test class. We can do this by using
+ * the @Autowired annotation:
+ * @Autowired private EmployeeRepository employeeRepository;
+ */
 
 
-  @Autowired
-  private EmployeeRepository employeeRepository;
+@Autowired
+private EmployeeRepository employeeRepository;
 
-  // Junit test for save employee operation using bdd style
+// Junit test for save employee operation using bdd style
 
-  @DisplayName("Junit test for save employee operation using bdd style")
-  @Test
-  void givenEmployeeObject_whenSave_thenReturnSaveEmployee() {
+@DisplayName("Junit test for save employee operation using bdd style")
+@Test
+void givenEmployeeObject_whenSave_thenReturnSaveEmployee() {
 
-    // given precondition or setup
+  // given precondition or setup
 
-    Employee employee = Employee.builder().firstName("John").lastName("Doe")
-        .email("JhonDoe@gmail.com").build();
+  Employee employee = Employee.builder().firstName("John").lastName("Doe")
+      .email("JhonDoe@gmail.com").build();
 
-    // when action or the behavior that we are going test
+  // when action or the behavior that we are going test
 
-    Employee saveEmployee = employeeRepository.save(employee);
+  Employee saveEmployee = employeeRepository.save(employee);
 
-    // then verify the output
+  // then verify the output
 
-    // assertions with assertj
+  // assertions with assertj
 
-    Assertions.assertThat(saveEmployee).isNotNull();
-    Assertions.assertThat(saveEmployee.getId()).isPositive();
-
-
-  }
-
-  @Test
-    // Junit test for
-  void givenEmployeeList_whenFindAll_thenReturnEmployeeList() {
-
-    // given - precondition or setup
-
-    Employee employee01 = Employee.builder()
-        .firstName("John")
-        .lastName("Doe")
-        .email("JhonDoe@gmail.com")
-        .build();
-
-    Employee employee02 = Employee
-        .builder()
-        .firstName("Jane")
-        .lastName("Doe")
-        .email("JaneDoe@gmail.com")
-        .build();
-
-    employeeRepository.save(employee01);
-    employeeRepository.save(employee02);
-
-    // when - action or the behavior that we are going test
-
-    List<Employee> employees = employeeRepository.findAll();
-
-    // then - verify the output
-
-    Assertions.assertThat(employees).isNotNull();
-    Assertions.assertThat(employees.size()).isEqualTo(2);
+  Assertions.assertThat(saveEmployee).isNotNull();
+  Assertions.assertThat(saveEmployee.getId()).isPositive();
 
 
-  }
+}
+
+@Test
+
+  // Junit test for
+void givenEmployeeList_whenFindAll_thenReturnEmployeeList() {
+
+  // given - precondition or setup
+
+  Employee employee01 = Employee.builder().firstName("John").lastName("Doe")
+      .email("JhonDoe@gmail.com").build();
+
+  Employee employee02 = Employee.builder().firstName("Jane").lastName("Doe")
+      .email("JaneDoe@gmail.com").build();
+
+  employeeRepository.save(employee01);
+  employeeRepository.save(employee02);
+
+  // when - action or the behavior that we are going test
+
+  List<Employee> employees = employeeRepository.findAll();
+
+  // then - verify the output
+
+  Assertions.assertThat(employees).isNotNull();
+  Assertions.assertThat(employees.size()).isEqualTo(2);
 
 
-  @Test
-    // Junit test for get employees by id
-  void given_whenFindById_thenReturnEmployee() {
-
-    // given - precondition or setup
-
-    Employee employee = Employee
-        .builder()
-        .firstName("Jane")
-        .lastName("Doe")
-        .email("JaneDoe@gmail.com")
-        .build();
-
-    // when - action or the behavior that we are going test
-
-    Employee employeeOptional = employeeRepository.findById(employee.getId()).get();
-
-    // then - verify the output
-
-    Assertions.assertThat(employeeOptional).isNotNull();
+}
 
 
+@Test
+  // Junit test for get employees by id
+void givenEmployeeObject_whenFindByIdEmployee_thenReturnEmployee() {
+
+  // given - precondition or setup
+
+  Employee employee = Employee.builder().firstName("Jane").lastName("Doe")
+      .email("JaneDoe@gmail.com").build();
+
+  employeeRepository.save(employee);
+
+  // when - action or the behavior that we are going test
+
+  Optional<Employee> employeedb = employeeRepository.findById(employee.getId());
+
+  // then - verify the output
+
+  Assertions.assertThat(employeedb).isPresent();
+  Assertions.assertThat(employeedb.get().getFirstName()).isEqualTo("Jane");
+
+}
+
+@Test
+  // Junit test for
+void givenEmployeeEmail_whenFindByEmail_thenReturnEmployeeObject() {
+
+  // given - precondition or setup
+
+  Employee employee = Employee.builder()
+      .firstName("Jhon")
+      .lastName("Doe")
+      .email("JhonDoe@gmail.com")
+      .build();
+
+  employeeRepository.save(employee);
+
+  // when - action or the behavior that we are going test
+
+  Optional<Employee> employeedb = employeeRepository.findByEmail(employee.getEmail());
+  // then - verify the output
+
+  Assertions.assertThat(employeedb).isPresent();
+  Assertions.assertThat(employeedb.get().getEmail()).isEqualTo(employee.getEmail());
+
+}
+
+@Test
+// Junit test for
+void givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployee() {
+
+  // given - precondition or setup
+
+  Employee employee = Employee.builder()
+      .firstName("Jhon")
+      .lastName("Doe")
+      .email("JhonDoe@gmail.com")
+      .build();
+
+  employeeRepository.save(employee);
+  // when - action or the behavior that we are going test
+
+  Employee employeedb = employeeRepository.findById(employee.getId()).get();
+
+  employeedb.setEmail("JhonDoe@hotmail.com");
+  Employee updatedEmployee = employeeRepository.save(employeedb);
+
+  Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("JhonDoe@hotmail.com");
+
+}
 
 
-  }
+@Test
+  // Junit test for
+void givenEmployeeObject_whenDeleteEmployee_thenRemoveEmployee() {
+
+  // given - precondition or setup
+  Employee employee = Employee.builder()
+      .firstName("Jhon")
+      .lastName("Doe")
+      .email("JhonDoe@gmail.com")
+      .build();
+
+  employeeRepository.save(employee);
+  // when - action or the behavior that we are going test
+
+  employeeRepository.deleteById(employee.getId());
+
+  Optional<Employee> employeeDeleted = employeeRepository.findById(employee.getId());
+
+  // then - verify the output
+
+  Assertions.assertThat(employeeDeleted).isEmpty();
+
+}
+
+@Test
+
+  // Junit test for
+void givenEmployeeObject_whenFindByNameAndLastName_thenReturnEmployeeObject() {
+
+  // given - precondition or setup
+  Employee employee = Employee.builder()
+      .firstName("Jhon")
+      .lastName("Doe")
+      .email("JhonDoe@gmail.com")
+      .build();
+
+  Employee employeedb = employeeRepository.save(employee);
+
+  // when - action or the behavior that we are going test
+
+  Employee employeeTest = employeeRepository.buscarPorNombreYApellido(employee.getFirstName(),
+      employee.getLastName());
+
+  // then - verify the output
+
+  Assertions.assertThat(employeeTest).isNotNull();
+}
+
 }
 
 
