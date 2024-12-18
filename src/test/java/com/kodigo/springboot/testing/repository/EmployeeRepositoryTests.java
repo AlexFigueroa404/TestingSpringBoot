@@ -5,6 +5,7 @@ import com.kodigo.springboot.testing.entity.Employee;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,24 @@ public class EmployeeRepositoryTests {
 private EmployeeRepository employeeRepository;
 
 // Junit test for save employee operation using bdd style
+private Employee employee;
+
+@BeforeEach
+void setup() {
+
+  employee = Employee.builder()
+      .firstName("Jhon")
+      .lastName("Doe")
+      .email("JhonDoe@gmail.com")
+      .build();
+}
+
 
 @DisplayName("Junit test for save employee operation using bdd style")
 @Test
 void givenEmployeeObject_whenSave_thenReturnSaveEmployee() {
 
   // given precondition or setup
-
-  Employee employee = Employee.builder().firstName("John").lastName("Doe")
-      .email("JhonDoe@gmail.com").build();
 
   // when action or the behavior that we are going test
 
