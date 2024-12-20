@@ -13,4 +13,8 @@ Employee saveEmployee(Employee employee);
 Optional<Employee> findById(Long id);
 
 void deleteEmployee(Long id);
+
+
+Employee updateEmployee(Employee employee);
+
 }
